@@ -30,6 +30,8 @@ users:
     # sudo: Defaults to none. Accepts a sudo rule string, a list of sudo rule
     #       strings or False to explicitly deny sudo usage.
     sudo: ALL=(ALL) NOPASSWD:ALL
+    # Set bash as default shell (otherwise it uses /bin/sh)
+    shell: /bin/bash
 
 # Enable login with password
 ssh_pwauth: True
