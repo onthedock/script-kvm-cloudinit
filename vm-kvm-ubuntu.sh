@@ -63,7 +63,7 @@ if [ $debug = "true" ]; then echo $is_installed; fi
 if [[ $is_installed =~ "installed" ]]; then
     sudo cloud-localds "$POOL_FOLDER/$VM_NAME.cloudconfig.img" $CLOUD_CONFIG_FILE
 else
-    echo "[ERROR] cloud-image-utils is not instaled."
+    echo "[ERROR] cloud-image-utils is not installed."
 fi
 
 # Boot with seed.img
