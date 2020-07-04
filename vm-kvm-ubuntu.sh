@@ -40,6 +40,7 @@ packages:
   - qemu-guest-agent
 
 hostname: $VM_HOSTNAME
+final_message: "The system is finally up, after $UPTIME seconds"
 ENDOFCONFIG
 # -----------------------------------------
 
