@@ -90,6 +90,7 @@ if [ $wait = "true" ]; then
   done
   echo "cloud-init configuration process finished."
 
+  echo "Ejecting $POOL_FOLDER/$VM_NAME.cloudconfig.img from $VM_NAME ..."
   virsh change-media --path "$POOL_FOLDER/$VM_NAME.cloudconfig.img" $VM_NAME --eject
 
   virsh domifaddr $VM_NAME
