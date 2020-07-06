@@ -42,6 +42,11 @@ packages:
   - qemu-guest-agent
 
 hostname: $VM_HOSTNAME
+
+runcmd:
+  - systemctl enable qemu-guest-agent
+  - systemctl start qemu-guest-agent
+
 final_message: "The system is finally up, after $UPTIME seconds"
 ENDOFCONFIG
 # -----------------------------------------
