@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 debug="false"
+wait="true"
+time2wait=3
 
 CLOUD_IMG_FOLDER="/home/xavi/Documents/isos/cloud-imgs"
 POOL_FOLDER="/var/lib/libvirt/images"
@@ -78,14 +80,18 @@ fi
 
 sudo virt-install --name $VM_NAME --virt-type kvm --hvm --os-variant=$KVM_PARAM_OSVARIANT --memory $KVM_PARAM_MEMORY --vcpus $KVM_PARAM_VCPU --network network=default,model=virtio --graphics spice --disk "$POOL_FOLDER/$VM_NAME.img",device=disk,bus=virtio --disk "$POOL_FOLDER/$VM_NAME.cloudconfig.img",device=cdrom --noautoconsole --import
 
-# -----
-# Both obtaining the IP or removing the cdrom are executed way before the VM has fully booted,
-# so the output from the commands is either empty or may cause unexpected problems (when the cd is removed)
-# Get VM IP
-# virsh domifaddr $VM_NAME
-# Remove cd
-#echo "Ejecting CloudInit config drive ..."
-#virsh change-media --path "$POOL_FOLDER/$VM_NAME.cloudconfig.img" $VM_NAME --eject
+if [ $wait = "true" ]; then
+  # Waiting until cloud-init finishes
+  virsh qemu-agent-command $VM_NAME --cmd '{"execute": "guest-file-open", "arguments": {"path":"/var/lib/cloud/instance/boot-finished"}}' 1>/dev/null 2>/dev/null
+  while [ $? -ne 0 ]; do
+    sleep $time2wait
+    echo "... waiting for cloud-init $time2wait more seconds ..."
+    virsh qemu-agent-command $VM_NAME --cmd '{"execute": "guest-file-open", "arguments": {"path":"/var/lib/cloud/instance/boot-finished"}}' 1>/dev/null 2>/dev/null
+  done
+  echo "cloud-init configuration process finished."
 
+  virsh change-media --path "$POOL_FOLDER/$VM_NAME.cloudconfig.img" $VM_NAME --eject
 
+  virsh domifaddr $VM_NAME
+fi
  
